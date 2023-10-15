@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App;
 
@@ -15,12 +15,11 @@ class Csrf
     {
     }
 
-    public function failureHandler() : Closure
+    public function failureHandler(): Closure
     {
-        return fn (
+        return fn(
             ServerRequestInterface $request,
             RequestHandlerInterface $handler
-        ) => $this->responseFactory->createResponse() ->withStatus(403);
-
+        ) => $this->responseFactory->createResponse()->withStatus(403);
     }
 }

@@ -31,9 +31,10 @@ class ValidationExceptionMiddleware implements MiddlewareInterface
         } catch (ValidationException $e) {
             $response = $this->responseFactory->createResponse();
 
-            if($this->requestService->isXhr($request)) {
+            if ($this->requestService->isXhr($request)) {
                 return $this->responseFormatter->asJson($response->withStatus(422), $e->errors);
             }
+
             $referer  = $this->requestService->getReferer($request);
             $oldData  = $request->getParsedBody();
 

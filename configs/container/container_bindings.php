@@ -101,6 +101,6 @@ return [
         RequestValidatorFactory::class
     ),
     'csrf'                                  => fn(ResponseFactoryInterface $responseFactory, Csrf $csrf) => new Guard(
-        $responseFactory, persistentTokenMode: true, failureHandler: $csrf->failureHandler()
+        $responseFactory, failureHandler: $csrf->failureHandler(), persistentTokenMode: true
     ),
 ];
