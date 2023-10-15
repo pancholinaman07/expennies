@@ -10,6 +10,7 @@ use App\RequestValidators\CreateCategoryRequestValidator;
 use App\RequestValidators\UpdateCategoryRequestValidator;
 use App\ResponseFormatter;
 use App\Services\CategoryService;
+use App\Services\RequestService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
@@ -20,7 +21,8 @@ class CategoriesController
         private readonly Twig $twig,
         private readonly RequestValidatorFactoryInterface $requestValidatorFactory,
         private readonly CategoryService $categoryService,
-        private readonly ResponseFormatter $responseFormatter
+        private readonly ResponseFormatter $responseFormatter,
+        private readonly RequestService $requestService
     ) {
     }
 
@@ -79,25 +81,24 @@ class CategoriesController
 
     public function load(Request $request, Response $response): Response
     {
-        $params = $request->getQueryParams();
-
-        $categories = array_map(function (Category $category) {
+        $params = $this->requestService->getDataTableQueryParameters($request);
+        $categories = $this->categoryService->getPaginatedCategories($params);
+        $transformer = function (Category $category) {
             return [
                 'id'        => $category->getId(),
                 'name'      => $category->getName(),
                 'createdAt' => $category->getCreatedAt()->format('m/d/Y g:i A'),
                 'updatedAt' => $category->getCreatedAt()->format('m/d/Y g:i A'),
             ];
-        }, $this->categoryService->getAll());
+        };
 
-        return $this->responseFormatter->asJson(
+        $totalCategories = count($categories);
+
+        return $this->responseFormatter->asDataTable(
             $response,
-            [
-                'data'            => $categories,
-                'draw'            => (int) $params['draw'],
-                'recordsTotal'    => count($categories),
-                'recordsFiltered' => count($categories),
-            ]
+            array_map($transformer, (array) $categories->getIterator()),
+            $params->draw,
+            $totalCategories
         );
     }
 }
