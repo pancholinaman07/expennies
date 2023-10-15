@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\RequestValidators;
 
 use App\Contracts\RequestValidatorFactoryInterface;
@@ -8,7 +10,7 @@ use Psr\Container\ContainerInterface;
 
 class RequestValidatorFactory implements RequestValidatorFactoryInterface
 {
-    public function __construct(private readonly  ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
     }
 
@@ -16,10 +18,10 @@ class RequestValidatorFactory implements RequestValidatorFactoryInterface
     {
         $validator = $this->container->get($class);
 
-        if($validator instanceof RequestValidatorInterface) {
+        if ($validator instanceof RequestValidatorInterface) {
             return $validator;
         }
 
-        throw new \RuntimeException('Failed to instantiate the request validator class ' . $class);
+        throw new \RuntimeException('Failed to instantiate the request validator class "' . $class . '"');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\DataObjects;
 
@@ -14,8 +14,6 @@ class SessionConfig
         public readonly bool $secure,
         public readonly bool $httpOnly,
         public readonly SameSite $sameSite
-    )
-    {
+    ) {
     }
-
 }

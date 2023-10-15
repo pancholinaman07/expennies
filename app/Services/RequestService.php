@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Services;
 
@@ -13,19 +13,25 @@ class RequestService
     {
     }
 
-    public function getReferer(ServerRequestInterface $request) : string
+    public function getReferer(ServerRequestInterface $request): string
     {
         $referer = $request->getHeader('referer')[0] ?? '';
 
-        if(!$referer) {
+        if (! $referer) {
             return $this->session->get('previousUrl');
         }
 
         $refererHost = parse_url($referer, PHP_URL_HOST);
 
-        if($refererHost !== $request->getUri()->getHost()) {
+        if ($refererHost !== $request->getUri()->getHost()) {
             $referer = $this->session->get('previousUrl');
         }
-        return  $referer;
+
+        return $referer;
+    }
+
+    public function isXhr(ServerRequestInterface $request) : bool
+    {
+        return $request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
     }
 }

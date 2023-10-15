@@ -9,34 +9,32 @@ use App\Contracts\SessionInterface;
 use App\Contracts\UserInterface;
 use App\Contracts\UserProviderServiceInterface;
 use App\DataObjects\RegisterUserData;
-use App\Entity\User;
-
 
 class Auth implements AuthInterface
 {
     private ?UserInterface $user = null;
+
     public function __construct(
         private readonly UserProviderServiceInterface $userProvider,
         private readonly SessionInterface $session
-    )
-    {
+    ) {
     }
 
     public function user(): ?UserInterface
     {
-        if($this->user !== null) {
-            return $this->user();
+        if ($this->user !== null) {
+            return $this->user;
         }
 
         $userId = $this->session->get('user');
 
-        if(!$userId) {
+        if (! $userId) {
             return null;
         }
 
         $user = $this->userProvider->getById($userId);
 
-        if(!$user) {
+        if (! $user) {
             return null;
         }
 
@@ -47,9 +45,9 @@ class Auth implements AuthInterface
 
     public function attemptLogin(array $credentials): bool
     {
-        $user =  $this->userProvider->getByCredentials($credentials);
+        $user = $this->userProvider->getByCredentials($credentials);
 
-        if(! $user || ! $this->checkCredentials($user, $credentials)) {
+        if (! $user || ! $this->checkCredentials($user, $credentials)) {
             return false;
         }
 
@@ -58,7 +56,7 @@ class Auth implements AuthInterface
         return true;
     }
 
-    public function checkCredentials(UserInterface $user, array $credentials) : bool
+    public function checkCredentials(UserInterface $user, array $credentials): bool
     {
         return password_verify($credentials['password'], $user->getPassword());
     }
@@ -66,11 +64,9 @@ class Auth implements AuthInterface
     public function logOut(): void
     {
         $this->session->forget('user');
-
         $this->session->regenerate();
 
         $this->user = null;
-
     }
 
     public function register(RegisterUserData $data): UserInterface
@@ -82,7 +78,7 @@ class Auth implements AuthInterface
         return $user;
     }
 
-    public function logIn(UserInterface $user) : void
+    public function logIn(UserInterface $user): void
     {
         $this->session->regenerate();
         $this->session->put('user', $user->getId());

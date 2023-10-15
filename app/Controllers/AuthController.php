@@ -13,7 +13,6 @@ use App\RequestValidators\UserLoginRequestValidator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
-use Valitron\Validator;
 
 class AuthController
 {
@@ -21,7 +20,7 @@ class AuthController
         private readonly Twig $twig,
         private readonly RequestValidatorFactoryInterface $requestValidatorFactory,
         private readonly AuthInterface $auth
-    ){
+    ) {
     }
 
     public function loginView(Request $request, Response $response): Response
@@ -40,9 +39,6 @@ class AuthController
             $request->getParsedBody()
         );
 
-
-
-
         $this->auth->register(
             new RegisterUserData($data['name'], $data['email'], $data['password'])
         );
@@ -56,11 +52,9 @@ class AuthController
             $request->getParsedBody()
         );
 
-
-
-       if( !$this->auth->attemptLogin($data)) {
-           throw new ValidationException(['password' => ['You have entered an invalid username or password']]);
-       }
+        if (! $this->auth->attemptLogin($data)) {
+            throw new ValidationException(['password' => ['You have entered an invalid username or password']]);
+        }
 
         return $response->withHeader('Location', '/')->withStatus(302);
     }
