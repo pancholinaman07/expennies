@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
             if (confirm('Are you sure you want to delete this category?')) {
                 del(`/categories/${ categoryId }`).then(response => {
-                    if(response.ok) {
+                    if (response.ok) {
                         table.draw()
                     }
                 })

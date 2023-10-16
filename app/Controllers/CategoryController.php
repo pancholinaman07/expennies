@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
 
-class CategoriesController
+class CategoryController
 {
     public function __construct(
         private readonly Twig $twig,
@@ -81,14 +81,14 @@ class CategoriesController
 
     public function load(Request $request, Response $response): Response
     {
-        $params = $this->requestService->getDataTableQueryParameters($request);
-        $categories = $this->categoryService->getPaginatedCategories($params);
+        $params      = $this->requestService->getDataTableQueryParameters($request);
+        $categories  = $this->categoryService->getPaginatedCategories($params);
         $transformer = function (Category $category) {
             return [
                 'id'        => $category->getId(),
                 'name'      => $category->getName(),
                 'createdAt' => $category->getCreatedAt()->format('m/d/Y g:i A'),
-                'updatedAt' => $category->getCreatedAt()->format('m/d/Y g:i A'),
+                'updatedAt' => $category->getUpdatedAt()->format('m/d/Y g:i A'),
             ];
         };
 
